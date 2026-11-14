@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>aierfan · UI preview</title>
+<style>body{margin:0;background:#f4f6fa;color:#27334b;font:14px/1.6 -apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif}main{max-width:1000px;margin:80px auto;padding:32px}h1{font-size:32px;letter-spacing:-1px;margin:0 0 6px}p{color:#79849a}section{display:flex;gap:40px;flex-wrap:wrap;margin-top:40px}.example{padding:24px;background:#fff;border-radius:20px;border:1px solid #e7eaf1}.caption{font-size:12px;color:#7b879d;margin:0 0 18px}.floating{position:fixed;right:24px;bottom:24px}button{margin-top:24px;border:1px solid #e1e4ed;border-radius:8px;background:white;color:#635bff;padding:8px 12px;cursor:pointer}</style>
+<script src="../extension/ui.js" defer></script>
+<script defer>
+document.addEventListener('DOMContentLoaded',()=>{
+ let enabled=true;
+ const views=[];
+ const state={enabled,total:128,blocked:3,scheduler:'ready'};
+ const draw=()=>views.forEach(view=>view.render(state));
+ for(const [id,floating] of [['popup',false],['page',true]]){
+  views.push(globalThis.__aierfanUI.mount(document.getElementById(id).attachShadow({mode:'open'}),{floating,onToggle:async value=>{state.enabled=value;draw()}}));
+ }
+ draw();
+ const other=globalThis.__aierfanUI.mount(document.getElementById('unavailable').attachShadow({mode:'open'}),{onToggle:async value=>other.render({enabled:value,total:128})});
+ other.render({total:128});
+ document.getElementById('block').onclick=()=>{state.blocked++;state.total++;draw();views[1].toast()};
+});
+</script>
+</head><body><main><h1>aierfan</h1><p>0.2.0 · 广告拦截，简单一点。</p><section><div class="example"><p class="caption">视频页面 · 工具栏弹窗</p><div id="popup"></div></div><div class="example"><p class="caption">其他网站 · 工具栏弹窗</p><div id="unavailable"></div></div></section><button id="block">预览拦截提示</button></main><div id="page" class="floating"></div></body>
+</html>

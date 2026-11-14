@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const path = require('node:path');
 const root = path.join(__dirname, '..');
-const { highestLevel, patchScheduler } = require('../extension/core.js');
+const { patchScheduler } = require('../extension/core.js');
 function harness() {
   const listeners = new Map();
   const context = {
@@ -17,7 +17,7 @@ function harness() {
   context.window = context;
   vm.createContext(context);
   for (const name of ['core.js', 'main.js']) vm.runInContext(fs.readFileSync(path.join(root, 'extension', name), 'utf8'), context);
-  context.dispatchEvent(new context.CustomEvent('kubb-helper:settings', {detail:'{"blockAds":true,"bestQuality":true}'}));
+  context.dispatchEvent(new context.CustomEvent('kubb-helper:settings', {detail:'{"blockAds":true}'}));
   return context;
 }
 class FakeScheduler {
@@ -27,13 +27,6 @@ class FakeScheduler {
   invokeList() {}
   getTimeDefine() {}
 }
-test('rank actual resolution ahead of list order or bitrate', () => {
-  assert.equal(highestLevel([{height:1080,bitrate:1}, {height:360,bitrate:9999}, {height:720}]), 0);
-  assert.equal(highestLevel([{name:'720'}, {name:'1080'}, {name:'480'}]), 1);
-  assert.equal(highestLevel([{height:1080,bitrate:10}, {height:1080,bitrate:20}]), 1);
-  assert.equal(highestLevel([]), -1);
-  assert.equal(highestLevel(null), -1);
-});
 test('ad interception is reversible and does not fake playback completion', () => {
   class Scheduler extends FakeScheduler {}
   let enabled = true, reports = 0;
@@ -72,39 +65,18 @@ test('Webpack replacement push is intercepted before module registration', () =>
   context.dispatchEvent(new context.CustomEvent('kubb-helper:settings', {detail:JSON.stringify({blockAds:false})}));
   assert.equal(scheduler.startPlay('ad'), 'original');
 });
-test('HLS waits for manifest, chooses supplied quality, then falls back on fatal error', async () => {
+test('the extension leaves HLS and player quality untouched', () => {
   const context = harness();
-  class Hls {
-    static Events = {MANIFEST_PARSED:'parsed', ERROR:'error', DESTROYING:'destroy', LEVEL_SWITCHED:'level'};
-    constructor() { this.listeners = {}; this.levels = []; }
-    on(event, fn) { (this.listeners[event] ||= []).push(fn); }
-    emit(event, data) { for (const fn of this.listeners[event] || []) fn(event, data); }
-    loadSource(url) { this.url = url; }
-  }
+  class Hls { loadSource(url) { this.url = url; } }
+  const original = Hls.prototype.loadSource;
   context.Hls = Hls;
-  const hls = new context.Hls();
-  hls.loadSource('existing-manifest.m3u8');
-  assert.equal(hls.nextLevel, undefined);
-  hls.levels = [{height:1080}, {height:360}, {height:720}];
-  hls.emit('parsed', {});
-  hls.nextLevel = 1; // Kubb's own synchronous default selection.
-  await new Promise(resolve => queueMicrotask(resolve));
-  assert.equal(hls.nextLevel, 0);
-  assert.equal(hls.url, 'existing-manifest.m3u8');
-  hls.emit('error', {fatal:true});
-  assert.equal(hls.nextLevel, -1);
-  context.dispatchEvent(new context.CustomEvent('kubb-helper:settings', {detail:'{"bestQuality":true}'}));
-  assert.equal(hls.nextLevel, -1); // Do not repeatedly force a broken level.
-  hls.loadSource('next-episode.m3u8');
-  hls.emit('parsed', {});
-  await new Promise(resolve => queueMicrotask(resolve));
-  assert.equal(hls.nextLevel, 0);
-  context.dispatchEvent(new context.CustomEvent('kubb-helper:settings', {detail:'{"bestQuality":false}'}));
-  assert.equal(hls.nextLevel, -1);
+  assert.equal(Hls.prototype.loadSource, original);
+  assert.equal(Object.getOwnPropertyDescriptor(context, 'Hls').set, undefined);
 });
 test('manifest limits access to Kubb and loads at document start', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(root, 'extension/manifest.json')));
   assert.deepEqual(manifest.permissions, ['storage']);
+  assert.ok(fs.existsSync(path.join(root, 'extension', manifest.action.default_popup)));
   for (const script of manifest.content_scripts) {
     assert.deepEqual(script.matches, ['https://www.kubb.tv/*', 'https://kubb.tv/*']);
     assert.equal(script.run_at, 'document_start');

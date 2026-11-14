@@ -1,26 +1,44 @@
 {
   "manifest_version": 3,
   "name": "aierfan",
-  "description": "实验性插件：拦截 Kubb（爱壹帆）视频中插广告，并在已提供的流中优先选择最高画质。",
-  "version": "0.1.0",
+  "description": "拦截 kubb.tv 视频中插广告，清爽追剧。仅本地保存设置与拦截次数。",
+  "version": "0.2.0",
   "minimum_chrome_version": "111",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "permissions": ["storage"],
+  "permissions": [
+    "storage"
+  ],
   "content_scripts": [
     {
-      "matches": ["https://www.kubb.tv/*", "https://kubb.tv/*"],
-      "js": ["core.js", "main.js"],
+      "matches": [
+        "https://www.kubb.tv/*",
+        "https://kubb.tv/*"
+      ],
+      "js": [
+        "core.js",
+        "main.js"
+      ],
       "run_at": "document_start",
       "world": "MAIN"
     },
     {
-      "matches": ["https://www.kubb.tv/*", "https://kubb.tv/*"],
-      "js": ["content.js"],
+      "matches": [
+        "https://www.kubb.tv/*",
+        "https://kubb.tv/*"
+      ],
+      "js": [
+        "ui.js",
+        "content.js"
+      ],
       "run_at": "document_start"
     }
-  ]
+  ],
+  "action": {
+    "default_title": "aierfan · 广告拦截",
+    "default_popup": "popup.html"
+  }
 }

@@ -1,18 +1,6 @@
 (function (root) {
   'use strict';
   const patched = new WeakSet();
-  function highestLevel(levels) {
-    if (!Array.isArray(levels) || !levels.length) return -1;
-    return levels.reduce((best, level, index) => {
-      const rank = item => [Number(item.height) || Number.parseInt(item.name, 10) || 0,
-        Number(item.bitrate) || 0, Number(item.width) || 0];
-      const a = rank(level), b = rank(levels[best]);
-      for (let i = 0; i < a.length; i++) {
-        if (a[i] !== b[i]) return a[i] > b[i] ? index : best;
-      }
-      return best;
-    }, 0);
-  }
   function patchScheduler(exports, enabled, report) {
     const proto = exports?.b?.prototype;
     // Fail closed if Kubb changes this private interface.
@@ -29,7 +17,7 @@
     patched.add(proto);
     return true;
   }
-  const api = { highestLevel, patchScheduler };
+  const api = { patchScheduler };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else Object.defineProperty(root, '__kubbHelperCore', { value: api, configurable: true });
 })(globalThis);

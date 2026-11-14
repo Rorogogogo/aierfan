@@ -1,49 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="800" viewBox="0 0 1280 800" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#12141c"/><stop offset="1" stop-color="#0a0b11"/>
-    </linearGradient>
-    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#b9c7ff"/><stop offset="1" stop-color="#7f9bff"/>
-    </linearGradient>
-  </defs>
-  <rect width="1280" height="800" fill="url(#bg)"/>
-
-  <!-- logo -->
-  <g transform="translate(96,120)">
-    <rect x="0" y="0" width="128" height="128" rx="28" fill="#1e2230" stroke="#424553" stroke-width="2"/>
-    <path d="M44 38 L90 64 L44 90 Z" fill="url(#accent)"/>
-    <circle cx="92" cy="32" r="20" fill="#ff6b6b" stroke="#12141c" stroke-width="4"/>
-    <line x1="83" y1="32" x2="101" y2="32" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
-  </g>
-
-  <text x="96" y="312" fill="#f2f4fa" font-size="64" font-weight="700">aierfan</text>
-  <text x="96" y="364" fill="#a8bbff" font-size="30" font-weight="500">拦截中插广告 · 优先最高画质</text>
-
-  <!-- feature bullets -->
-  <g fill="#c4c9d9" font-size="27">
-    <circle cx="110" cy="440" r="6" fill="#7f9bff"/><text x="132" y="449">自动拦截视频中插广告，省去等待</text>
-    <circle cx="110" cy="492" r="6" fill="#7f9bff"/><text x="132" y="501">每次拦截弹出 3 秒提示，并累计拦截次数</text>
-    <circle cx="110" cy="544" r="6" fill="#7f9bff"/><text x="132" y="553">在已提供的视频流中优先选择最高画质</text>
-    <circle cx="110" cy="596" r="6" fill="#7f9bff"/><text x="132" y="605">全中文界面 · 不收集任何数据</text>
-  </g>
-
-  <!-- panel mock -->
-  <g transform="translate(792,232)">
-    <rect x="0" y="0" width="360" height="336" rx="16" fill="#171922" stroke="#424553" stroke-width="2"/>
-    <text x="24" y="44" fill="#eee" font-size="22" font-weight="650">aierfan · 实验版</text>
-    <!-- toggle 1 -->
-    <rect x="24" y="76" width="20" height="20" rx="4" fill="#a8bbff"/><text x="56" y="92" fill="#eee" font-size="19">拦截视频中插广告</text>
-    <!-- toggle 2 -->
-    <rect x="24" y="112" width="20" height="20" rx="4" fill="#a8bbff"/><text x="56" y="128" fill="#eee" font-size="19">优先选择最高画质</text>
-    <text x="24" y="172" fill="#c4c9d9" font-size="17">广告拦截已就绪 · 本次已拦截 3 次</text>
-    <text x="24" y="202" fill="#c4c9d9" font-size="17">累计拦截 128 次</text>
-    <text x="24" y="232" fill="#c4c9d9" font-size="17">已请求 1080p（已提供的最高画质）</text>
-    <text x="24" y="262" fill="#c4c9d9" font-size="17">实际画面：1920 × 1080</text>
-    <!-- toast -->
-    <rect x="40" y="286" width="280" height="40" rx="10" fill="#1f2230" stroke="#596079" stroke-width="1"/>
-    <text x="180" y="311" fill="#eee" font-size="17" text-anchor="middle">已拦截广告 · 累计拦截 128 次</text>
-  </g>
-
-  <text x="96" y="720" fill="#5b6075" font-size="20">Chrome 扩展 · Manifest V3 · 开源</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="800" viewBox="0 0 1280 800" font-family="PingFang SC, -apple-system, sans-serif">
+<rect width="1280" height="800" fill="#f4f6fa"/>
+<rect x="80" y="100" width="52" height="52" rx="15" fill="#ebe8ff"/>
+<g transform="translate(94,113)" stroke="#635bff" fill="none" stroke-width="2" stroke-linejoin="round"><path d="m12 1 10 4v7c0 6-5 10-10 12C7 22 2 18 2 12V5l10-4Z"/><path d="m7 12 3 3 7-7"/></g>
+<text x="80" y="259" fill="#1a2540" font-size="66" font-weight="700" letter-spacing="-2">aierfan</text>
+<text x="80" y="322" fill="#635bff" font-size="34" font-weight="600">少点打扰，多点好剧。</text>
+<text x="80" y="408" fill="#4c5b73" font-size="25">拦截视频中插广告，让追剧更清爽。</text>
+<g font-size="22" fill="#7b879d">
+<text x="80" y="475">一个开关，随时开启或暂停</text>
+<text x="80" y="521">工具栏弹窗，一眼查看拦截次数</text>
+<text x="80" y="567">设置与统计仅保存在本机</text>
+</g>
+<rect x="740" y="160" width="420" height="435" rx="22" fill="#e6e9f2" opacity=".65"/>
+<rect x="730" y="150" width="420" height="435" rx="20" fill="#fff" stroke="#e5e9f0"/>
+<rect x="756" y="176" width="44" height="44" rx="12" fill="#efedff"/>
+<g transform="translate(765,184)" stroke="#635bff" fill="none" stroke-width="1.8" stroke-linejoin="round"><path d="m13 2 9 3v6c0 6-4 9-9 12-5-3-9-6-9-12V5l9-3Z"/><path d="m9 12 3 3 6-6"/></g>
+<text x="813" y="196" fill="#19243b" font-size="24" font-weight="700">aierfan</text>
+<text x="813" y="219" fill="#788399" font-size="14">少点打扰，多点好剧。</text>
+<circle cx="1051" cy="194" r="4" fill="#18a882"/><text x="1063" y="199" fill="#168366" font-size="14">已开启</text>
+<rect x="756" y="246" width="368" height="127" rx="13" fill="#f7f8fc" stroke="#eceef5"/>
+<path d="M940 270v79" stroke="#e5e8f0"/>
+<text x="777" y="280" fill="#748097" font-size="15">累计拦截</text><text x="961" y="280" fill="#748097" font-size="15">当前页面</text>
+<text x="777" y="333" fill="#1a2540" font-size="40" font-weight="600">128</text><text x="859" y="332" fill="#8b95a7" font-size="15">次</text>
+<text x="961" y="333" fill="#1a2540" font-size="40" font-weight="600">3</text><text x="995" y="332" fill="#8b95a7" font-size="15">次</text>
+<path d="M730 398h420" stroke="#edf0f5"/>
+<text x="756" y="435" fill="#27334b" font-size="18" font-weight="600">拦截中插广告</text><text x="756" y="464" fill="#7b879d" font-size="14">自动跳过已适配的中插广告</text>
+<rect x="1078" y="425" width="46" height="29" rx="15" fill="#635bff"/><circle cx="1110" cy="439.5" r="10" fill="#fff"/>
+<path d="M730 502h420" stroke="#edf0f5"/><text x="756" y="537" fill="#8b95a7" font-size="13">仅在 kubb.tv 生效 · 数据留在本机</text><text x="1050" y="537" fill="#635bff" font-size="14">打开网站 ↗</text>
+<text x="756" y="568" fill="#9aa4b6" font-size="11">界面示意 · 拦截次数因使用情况而异</text>
+<text x="80" y="717" fill="#8b95a7" font-size="18">Chrome 扩展 · 简体中文 · 开源</text>
 </svg>

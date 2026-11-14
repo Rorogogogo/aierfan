@@ -1,81 +1,56 @@
-# Kubb Helper for Chrome
+# aierfan
 
-Experimental Manifest V3 extension, built and installed locally on 14 November 2026.
+A small Chrome extension that blocks scheduled mid-roll ads on **kubb.tv**.
 
-## What it does
+## Controls
 
-- Stops Kubb's JavaScript mid-roll scheduler before it begins an ad countdown or replaces the episode source.
-- Prefers the highest resolution among the HLS streams already delivered to the player.
-- Shows an ad-block counter and the actual decoded video dimensions.
-- Provides separate switches for ad blocking and quality selection, saved locally.
-- Returns to adaptive quality if the selected stream produces a fatal HLS error.
+Click the pinned **aierfan** toolbar icon to open the popup. It shows the ad-blocking switch, cumulative blocked-ad count, and current page count. On supported pages, the small **aierfan** pill at the bottom right opens the same controls. Press Escape to collapse the page panel.
 
-This is not a VIP unlock. The tested episode supplied one stream, decoded at **720 × 400**, even though Kubb labels it 480P. The extension found no higher-resolution variant in that player session. It does not change membership, purchase coins, rewrite media URLs or request restricted streams.
+The interface is in Simplified Chinese. Settings and counts stay in `chrome.storage.local` on your device. There is no telemetry or external service.
 
-It targets scheduled mid-video ads. Banner ads, ads baked into the movie, prerolls using a different player, and server-side insertion are outside the verified scope.
+## What it blocks
 
-## Installed copy
+The extension suppresses the adapted player's JavaScript mid-roll scheduler before it starts an ad countdown or replaces the episode source. Each blocked ad shows a three-second notification. Turning the switch off restores the original scheduler behavior.
 
-The extension files are now located at:
+It targets scheduled mid-video ads. Banners, ads baked into the video, other preroll players and server-side ads are outside the verified scope. It does not change video quality, membership, purchases, coins, account fields or media URLs.
 
-`/Users/roro/Developer/Personal Project/kubb-helper/extension`
+## Install locally
 
-Chrome extension ID: `pmnabdombbkpoiedcheejnnfcjbobggg`.
+1. Open `chrome://extensions` and enable Developer mode.
+2. Click **Load unpacked** and select the `extension` folder.
+3. Pin **aierfan**, then refresh your kubb.tv tabs.
 
-Keep that folder in place. Chrome’s existing registration continues to work through the compatibility link at `/Users/roro/Developer/kubb-helper`, preserving its extension ID and saved settings. Existing Kubb tabs need a reload before the extension runs. Expand **Kubb Helper · experimental** at the bottom right to inspect the status or change settings. A newly opened video tab works immediately.
+After updating the files, click **Reload** on the aierfan card in `chrome://extensions`, then refresh your video tab. Existing counts and the ad-blocking preference are preserved when reloading the same installed extension. The obsolete quality preference is ignored.
 
-To install elsewhere: open `chrome://extensions/`, enable Developer mode, click **Load unpacked**, and select the `extension` folder. No build or dependency installation is required.
+The local files are in `/Users/roro/Developer/Personal Project/kubb-helper/extension`. The compatibility link at `/Users/roro/Developer/kubb-helper` still points to that folder.
 
-After editing the code, click **Reload** on the Kubb Helper card in `chrome://extensions/`, then reload the Kubb tab.
+## Implementation
 
-## Verified behavior
+- `core.js` validates and patches the observed scheduler interface.
+- `main.js` runs in the page's MAIN world at document start and intercepts the `bgqT` Webpack scheduler factory. It has no HLS or video-service hooks.
+- `content.js` owns storage, page status and the floating control, in Chrome's isolated world.
+- `ui.js` renders the shared card and accessible switch inside a Shadow DOM.
+- `popup.html` / `popup.js` provide the toolbar popup. The popup uses extension messaging to read the current page's scheduler status. On other sites it explains where the extension works.
 
-Test URL: `https://www.kubb.tv/play/46Aua0WZD14?id=iQPgH4IiFDC` (Reply 1988, episode 02).
+The only extension permission is `storage`. Content scripts match only `https://www.kubb.tv/*` and `https://kubb.tv/*`. No new host permissions are needed for the toolbar popup.
 
-Live Chrome comparison:
-
-1. Ad hook reported ready.
-2. With blocking disabled, seeking to approximately 44:55 caused Kubb to display **3s 后播放广告** (ad countdown).
-3. With blocking enabled after reloading, the same seek registered **1 blocked**; playback advanced past 45:00 without the countdown or ad replacement.
-4. A previous live pass registered **2 blocked**.
-5. The player supplied one stream; decoded dimensions were **720 × 400**.
-6. Disabling quality preference displayed **Automatic**. Re-enabling it displayed **Only one stream supplied**.
-7. Both settings were restored to enabled. The separate test tab was left paused around 45:23. The earlier viewing tab was retained.
-
-Eight automated tests passed, including a contract test that executes the current public scheduler module with a fake timer, triggers its real mid-roll point, and verifies suppression and re-enabling. HLS tests cover unordered variants, default-selection timing, fatal-error fallback, and quality switching off. Webpack tests cover the bootstrap callback and its retained old push function.
-
-Run offline tests:
+## Verify
 
 ```sh
 npm test
-```
-
-The public-source contract test is skipped offline unless `KUBB_PUBLIC_BUNDLE` points to a downloaded Kubb main bundle. To download the current public bundle and run all eight tests:
-
-```sh
 npm run test:live-source
 ```
 
-## How it works
+Offline tests cover scheduler reversibility, Webpack interception, untouched HLS behavior, settings synchronization, popup behavior on unrelated sites and persistent counts. The optional live test downloads the current public site bundle without cookies or credentials and checks its real scheduler contract.
 
-`main.js` runs at document start in the page's JavaScript world. It wraps the factory for the observed `bgqT` Webpack module, checks its scheduler interface, and intercepts `startPlay` while ad blocking is enabled. The existing scheduler marks its trigger point as played; the helper prevents the countdown and clears the pending flag. The original method is called when the switch is off.
+## Releases
 
-It also observes `Hls.loadSource`, waits until the manifest handlers finish, and sets `nextLevel` to the highest supplied variant. The player remains responsible for fetching and decoding the stream. The displayed dimensions come from the actual video element.
+Increment `extension/manifest.json` and `package.json`, then push a matching version tag. GitHub Actions runs tests, builds a ZIP and submits the extension update to Chrome Web Store review using the configured OAuth secrets. Google controls review and approval. The **Verify Chrome Web Store credentials** workflow performs a read-only token and item-access check.
 
-`content.js` runs in Chrome's isolated world and owns the controls and settings storage. It uses bounded text for page status and does not render page-provided HTML.
+The current local version is **0.2.0**. The previously submitted **0.1.0** remains in store review; the new code and listing assets can be used for the next submission.
 
-The only extension permission is `storage`. Content scripts match only `https://www.kubb.tv/*` and `https://kubb.tv/*`. There is no telemetry, remote code, cookie access, account access, external server, or network-blocking permission. The test-report button copies only settings, status and video dimensions/time/error code; it omits media URLs and account information.
+## Limitations
 
-## Limitations and recovery
+The site can change its private scheduler interface. If the hook is unavailable, the panel shows **需适配**. Disable the extension and refresh if playback behaves unexpectedly. Enabling the switch while an ad is already playing does not end that ad; refresh the page afterward.
 
-Kubb's scheduler is a private interface and can change. The extension checks the expected method names; if the module or interface changes, the ad hook can remain waiting or report unsupported. Disable its switch or disable the extension and reload the page if playback behaves unexpectedly.
-
-Turning ad blocking on while an ad is already playing does not end that ad. Reload afterward. Quality preference cannot create a higher-resolution stream that the server did not supply. Some streams omit resolution metadata; actual decoded dimensions are displayed independently.
-
-To remove it, use **Remove** on the Kubb Helper card in Chrome's extensions page.
-
-## Removed HD-response diagnostic
-
-The video-service (`jBNF` / `getMedia`) hook and its quality-path messages have been removed. Inspecting that one response was insufficient to establish where VIP authorization is enforced. The helper now labels single-level HLS data as **Active playlist has one quality**, without treating it as a conclusion about other available sources or backend enforcement.
-
-The local coin-display demonstration that earlier builds included has been removed. The extension does not touch the coin balance, membership, purchases, or any account value — it only blocks scheduled mid-roll ads and selects the highest quality among the streams the player already receives.
+See [PRIVACY.md](PRIVACY.md) for the privacy policy.
