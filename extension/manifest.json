@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "爱亦帆助手",
-  "description": "实验性插件：拦截 Kubb（爱亦帆）视频中插广告，并在已提供的流中优先选择最高画质。",
+  "name": "aierfan",
+  "description": "实验性插件：拦截 Kubb（爱壹帆）视频中插广告，并在已提供的流中优先选择最高画质。",
   "version": "0.1.0",
   "minimum_chrome_version": "111",
   "icons": {

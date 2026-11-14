@@ -17,7 +17,7 @@
     <line x1="83" y1="32" x2="101" y2="32" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
   </g>
 
-  <text x="96" y="312" fill="#f2f4fa" font-size="64" font-weight="700">爱亦帆助手</text>
+  <text x="96" y="312" fill="#f2f4fa" font-size="64" font-weight="700">aierfan</text>
   <text x="96" y="364" fill="#a8bbff" font-size="30" font-weight="500">拦截中插广告 · 优先最高画质</text>
 
   <!-- feature bullets -->
@@ -31,7 +31,7 @@
   <!-- panel mock -->
   <g transform="translate(792,232)">
     <rect x="0" y="0" width="360" height="336" rx="16" fill="#171922" stroke="#424553" stroke-width="2"/>
-    <text x="24" y="44" fill="#eee" font-size="22" font-weight="650">爱亦帆助手 · 实验版</text>
+    <text x="24" y="44" fill="#eee" font-size="22" font-weight="650">aierfan · 实验版</text>
     <!-- toggle 1 -->
     <rect x="24" y="76" width="20" height="20" rx="4" fill="#a8bbff"/><text x="56" y="92" fill="#eee" font-size="19">拦截视频中插广告</text>
     <!-- toggle 2 -->

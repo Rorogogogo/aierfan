@@ -1,10 +1,10 @@
-# Privacy Policy — 爱亦帆助手 (Aiyifan Ads-Free)
+# Privacy Policy — aierfan (Aiyifan Ads-Free)
 
 _Last updated: 14 November 2026_
 
 ## English
 
-爱亦帆助手 ("the extension") does not collect, store, transmit, or sell any
+aierfan ("the extension") does not collect, store, transmit, or sell any
 personal or sensitive user data.
 
 - **No data collection.** The extension makes no network requests of its own and
@@ -19,7 +19,7 @@ personal or sensitive user data.
 
 ## 简体中文
 
-爱亦帆助手（“本扩展”）不收集、不存储、不传输、不出售任何个人或敏感用户数据。
+aierfan（“本扩展”）不收集、不存储、不传输、不出售任何个人或敏感用户数据。
 
 - **不收集数据。** 本扩展自身不发起任何网络请求，不向开发者或任何第三方发送信息。
 - **仅本地设置。** 使用 Chrome 的 `storage` 权限，仅用于在你自己的设备上保存你的开关

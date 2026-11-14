@@ -71,7 +71,7 @@
       summary{cursor:pointer;padding:10px 14px;font-weight:650}section{padding:0 14px 12px}label{display:flex;gap:8px;align-items:center;margin:9px 0}input{accent-color:#a8bbff}p{margin:6px 0;color:#c4c9d9;font-size:12px}#error{color:#ffbb99}button{font:inherit;background:#303548;color:#eee;border:1px solid #596079;border-radius:5px;padding:4px 8px;cursor:pointer}
       .toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(8px);background:rgba(23,25,34,.94);color:#eee;border:1px solid #424553;border-radius:10px;padding:10px 16px;font:14px/1.4 system-ui,sans-serif;box-shadow:0 8px 30px #0008;opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;max-width:80vw;text-align:center}
       .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-    </style><div id="toast" class="toast" role="status" aria-live="polite"></div><details><summary>爱亦帆助手 · 实验版</summary><section>
+    </style><div id="toast" class="toast" role="status" aria-live="polite"></div><details><summary>aierfan · 实验版</summary><section>
       <label><input type="checkbox" id="ads">拦截视频中插广告</label>
       <label><input type="checkbox" id="quality">优先选择最高画质</label>
       <p id="status" role="status"></p><p id="total"></p><p id="stream"></p><p id="decoded"></p><p id="error"></p>
