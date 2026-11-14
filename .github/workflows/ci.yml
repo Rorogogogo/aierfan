@@ -1,0 +1,38 @@
+name: CI
+
+# Runs the offline test suite on every push and pull request, then packages the
+# unpacked extension as a downloadable zip artifact. No secrets are used.
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**/*.md'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      # No dependencies to install; the suite runs on node --test.
+      - run: npm test
+
+  package:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build extension zip
+        run: |
+          cd extension
+          zip -r "../kubb-helper-chrome.zip" . -x '*.DS_Store'
+          ls -l ../kubb-helper-chrome.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kubb-helper-chrome
+          path: kubb-helper-chrome.zip

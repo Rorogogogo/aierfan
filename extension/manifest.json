@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "爱亦帆助手",
+  "description": "实验性插件：拦截 Kubb（爱亦帆）视频中插广告，并在已提供的流中优先选择最高画质。",
+  "version": "0.1.0",
+  "minimum_chrome_version": "111",
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": ["https://www.kubb.tv/*", "https://kubb.tv/*"],
+      "js": ["core.js", "main.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["https://www.kubb.tv/*", "https://kubb.tv/*"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ]
+}
