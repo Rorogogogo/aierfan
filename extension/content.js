@@ -21,7 +21,6 @@
   }
   function render() {
     if (!view) return;
-    view.querySelector('#preview').hidden = !location.pathname.startsWith('/user');
     view.querySelector('#ads').checked = settings.blockAds;
     view.querySelector('#quality').checked = settings.bestQuality;
     const scheduler = { ready: '广告拦截已就绪', waiting: '等待 Kubb 广告模块', unsupported: 'Kubb 已更新：广告钩子不可用' };
@@ -78,7 +77,6 @@
       <p id="status" role="status"></p><p id="total"></p><p id="stream"></p><p id="decoded"></p><p id="error"></p>
       <p>画质取决于你的账号实际收到的流。若广告正在播放，更改拦截开关后请刷新页面。</p>
       <button id="copy">复制测试报告</button>
-      <button id="preview" hidden>预览金币显示（仅本地）</button><p id="preview-status" role="status"></p>
     </section></details>`;
     for (const [id, key] of [['ads', 'blockAds'], ['quality', 'bestQuality']]) {
       view.querySelector(`#${id}`).addEventListener('change', event => {
@@ -87,34 +85,6 @@
         notify(); render();
       });
     }
-    let coinPreview = null;
-    view.querySelector('#preview').addEventListener('click', event => {
-      const notice = view.querySelector('#preview-status');
-      if (coinPreview) {
-        if (coinPreview.node.isConnected) coinPreview.node.textContent = coinPreview.original;
-        coinPreview.label.remove();
-        coinPreview = null;
-        event.target.textContent = '预览金币显示（仅本地）';
-        notice.textContent = '已恢复原始显示。';
-        return;
-      }
-      const balance = document.querySelector('app-user-center .new-profile [title="金币"]');
-      const node = balance && [...balance.childNodes].find(node =>
-        node.nodeType === Node.TEXT_NODE && /^\s*\d[\d,]*(?:\.\d+)?\s*$/.test(node.textContent));
-      if (!node) {
-        notice.textContent = '请打开账号页面并等待余额加载。';
-        return;
-      }
-      const original = node.textContent;
-      const label = document.createElement('small');
-      label.textContent = '（仅本地预览）';
-      label.style.cssText = 'color:#ffbb99;margin-left:6px';
-      node.textContent = ' 99999 ';
-      balance.append(label);
-      coinPreview = {node, original, label};
-      notice.textContent = `仅显示效果。修改前：${original.trim()}。刷新即可还原。未向账号发送任何请求。`;
-      event.target.textContent = '恢复原始金币显示';
-    });
     view.querySelector('#copy').addEventListener('click', async event => {
       const videos = [...document.querySelectorAll('video')].map(v => ({
         width: v.videoWidth, height: v.videoHeight, time: Math.round(v.currentTime),

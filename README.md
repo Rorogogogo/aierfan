@@ -78,8 +78,4 @@ To remove it, use **Remove** on the Kubb Helper card in Chrome's extensions page
 
 The video-service (`jBNF` / `getMedia`) hook and its quality-path messages have been removed. Inspecting that one response was insufficient to establish where VIP authorization is enforced. The helper now labels single-level HLS data as **Active playlist has one quality**, without treating it as a conclusion about other available sources or backend enforcement.
 
-### Local coin-display demonstration
-
-The account-page helper now includes **Preview coin display (local only)**. It edits only the coin balance's DOM text node and appends a visible `(local preview)` label. It makes no network request, changes no account object or stored balance, and can restore the previous text.
-
-Live verification: the original balance displayed **0**. The preview changed it to **99999 (local preview)**. Clicking Chrome's Reload restored the account page to **0** and removed the preview. No purchase, extra reward claim or account credit was made during this demonstration. The preview is not saved or automatically reapplied after a reload.
+The local coin-display demonstration that earlier builds included has been removed. The extension does not touch the coin balance, membership, purchases, or any account value — it only blocks scheduled mid-roll ads and selects the highest quality among the streams the player already receives.
