@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const shield = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m12 3 8 3v5c0 5-4 8-8 10-4-2-8-5-8-10V6l8-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m8.5 12 2.3 2.3 4.7-4.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const shield = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="m12 2 8 3v5.5c0 5.2-3.4 8.9-8 11.5-4.6-2.6-8-6.3-8-11.5V5l8-3Zm-2 6v8l6.7-4L10 8Z"/></svg>';
   const styles = `
     :host{all:initial;color-scheme:dark;font:12px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;color:#d9dce7;-webkit-font-smoothing:antialiased}
     *,*::before,*::after{box-sizing:border-box}[hidden]{display:none!important}button,input{font:inherit}svg{width:16px;height:16px;flex-shrink:0}
