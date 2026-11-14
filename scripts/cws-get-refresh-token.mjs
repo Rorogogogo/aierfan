@@ -1,14 +1,16 @@
 #!/usr/bin/env node
 // Generate a Chrome Web Store API refresh token via the loopback OAuth flow.
 //
-// Prereqresuites (one time, in Google Cloud for the account that owns the extension):
+// Prerequisites (one time, in Google Cloud for the account that owns the extension):
 //   1. Create / pick a project; enable the "Chrome Web Store API".
 //   2. Configure the OAuth consent screen (User type: External; add your own
-//      Google account under "Test users").
+//      Google account under "Test users"). Use production status for durable CI
+//      credentials; Testing-mode refresh tokens expire after seven days.
 //   3. Create an OAuth client ID of type "Desktop app". Note its client id + secret.
 //
 // Usage:
-//   node scripts/cws-get-refresh-token.mjs <CLIENT_ID> <CLIENT_SECRET>
+//   node scripts/cws-get-refresh-token.mjs
+//   Enter the client ID and secret at the prompts (the secret is hidden).
 //   (or set CWS_CLIENT_ID / CWS_CLIENT_SECRET in the environment)
 //
 // It starts a local server, opens a Google consent URL, and after you approve it
@@ -18,19 +20,41 @@
 
 import http from 'node:http';
 import { spawn } from 'node:child_process';
+import { randomBytes, createHash } from 'node:crypto';
+import { createInterface } from 'node:readline/promises';
+import { Writable } from 'node:stream';
 
-const clientId = process.argv[2] || process.env.CWS_CLIENT_ID;
-const clientSecret = process.argv[3] || process.env.CWS_CLIENT_SECRET;
+async function prompt(label, hidden = false) {
+  process.stdout.write(label);
+  const output = hidden ? new Writable({ write(_chunk, _encoding, done) { done(); } }) : process.stdout;
+  const input = createInterface({ input: process.stdin, output, terminal: true });
+  try { return (await input.question('')).trim(); }
+  finally { input.close(); if (hidden) process.stdout.write('\n'); }
+}
+
+if (!process.stdin.isTTY || !process.stdout.isTTY) {
+  console.error('Run this helper directly in your own terminal; tokens must not enter agent logs.');
+  process.exit(1);
+}
+const clientId = process.argv[2] || process.env.CWS_CLIENT_ID || await prompt('OAuth client ID: ');
+const clientSecret = process.env.CWS_CLIENT_SECRET || await prompt('OAuth client secret (hidden): ', true);
 const SCOPE = 'https://www.googleapis.com/auth/chromewebstore';
+const state = randomBytes(32).toString('base64url');
+const verifier = randomBytes(32).toString('base64url');
+const challenge = createHash('sha256').update(verifier).digest('base64url');
+let redirectUri;
+let exchanging = false;
 
 if (!clientId || !clientSecret) {
-  console.error('Usage: node scripts/cws-get-refresh-token.mjs <CLIENT_ID> <CLIENT_SECRET>');
+  console.error('Both the client ID and client secret are required.');
   process.exit(1);
 }
 
 const server = http.createServer(async (req, res) => {
-  const url = new URL(req.url, `http://${req.headers.host}`);
+  const url = new URL(req.url, redirectUri);
   if (url.pathname !== '/') { res.writeHead(404).end(); return; }
+  if (url.searchParams.get('state') !== state) { res.writeHead(400).end('Invalid OAuth state'); return; }
+  if (exchanging) { res.writeHead(409).end('Token exchange already started'); return; }
 
   const code = url.searchParams.get('code');
   const error = url.searchParams.get('error');
@@ -41,22 +65,23 @@ const server = http.createServer(async (req, res) => {
     process.exit(1);
   }
   if (!code) { res.writeHead(400).end('No code'); return; }
+  exchanging = true;
 
-  const redirectUri = `http://localhost:${server.address().port}`;
   const body = new URLSearchParams({
     code, client_id: clientId, client_secret: clientSecret,
-    redirect_uri: redirectUri, grant_type: 'authorization_code'
+    redirect_uri: redirectUri, grant_type: 'authorization_code', code_verifier: verifier
   });
 
   try {
     const resp = await fetch('https://oauth2.googleapis.com/token', {
-      method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body
+      method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body,
+      signal: AbortSignal.timeout(30000)
     });
     const data = await resp.json();
-    if (!data.refresh_token) {
+    if (!resp.ok || !data.refresh_token) {
       res.writeHead(200, { 'Content-Type': 'text/plain' })
         .end('No refresh token returned. Revoke prior access and retry with prompt=consent.');
-      console.error('Response had no refresh_token:', JSON.stringify(data, null, 2));
+      console.error('No refresh token returned. Google error:', data.error || 'missing_refresh_token');
       server.close();
       process.exit(1);
     }
@@ -73,11 +98,12 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(0, () => {
-  const redirectUri = `http://localhost:${server.address().port}`;
+server.listen(0, '127.0.0.1', () => {
+  redirectUri = `http://127.0.0.1:${server.address().port}`;
   const authUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' + new URLSearchParams({
     client_id: clientId, redirect_uri: redirectUri, response_type: 'code',
-    scope: SCOPE, access_type: 'offline', prompt: 'consent'
+    scope: SCOPE, access_type: 'offline', prompt: 'consent', state,
+    code_challenge: challenge, code_challenge_method: 'S256'
   });
   console.log('\nOpen this URL in your browser and approve access:\n');
   console.log(authUrl + '\n');
