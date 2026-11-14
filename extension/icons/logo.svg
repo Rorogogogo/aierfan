@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
-  <title>aierfan</title>
+  <title>aierfan — ad blocker</title>
   <rect x="2" y="2" width="124" height="124" rx="30" fill="#101119" stroke="#30323e" stroke-width="2"/>
-  <defs><linearGradient id="aierfan-mark" x1="22" y1="20" x2="106" y2="110" gradientUnits="userSpaceOnUse"><stop stop-color="#72dfff"/><stop offset="1" stop-color="#9576ff"/></linearGradient></defs><path fill="url(#aierfan-mark)" fill-rule="evenodd" d="M64 20c-24 0-42 18-42 43v4c0 25 16 42 37 42 11 0 20-4 27-12v2c0 6 4 10 10 10s10-4 10-10V63c0-25-18-43-42-43ZM55 45c-3-2-7 0-7 4v32c0 4 4 6 7 4l27-16c4-2 4-6 0-8L55 45Z"/>
+  <defs><linearGradient id="aierfan-mark" x1="22" y1="20" x2="106" y2="110" gradientUnits="userSpaceOnUse"><stop stop-color="#72dfff"/><stop offset="1" stop-color="#9576ff"/></linearGradient></defs><circle cx="64" cy="64" r="45" fill="none" stroke="url(#aierfan-mark)" stroke-width="9"/><path d="m34 78 11-28h4l11 28m-22-8h18m13-20h7c19 0 19 28 0 28h-7Z" fill="none" stroke="#f5f6ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="m33 96 62-64" stroke="#101119" stroke-width="15"/><path d="m33 96 62-64" stroke="url(#aierfan-mark)" stroke-width="9" stroke-linecap="round"/>
 </svg>
