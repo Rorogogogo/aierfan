@@ -19,11 +19,11 @@ jobs:
           CLIENT_SECRET: ${{ secrets.CWS_CLIENT_SECRET }}
           REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}
           ITEM_ID: ${{ vars.CWS_ITEM_ID }}
-          PUBLISHER_ID: 1a56d3f7-f92f-4431-a934-8ed329d906e8
+          PUBLISHER_ID: ${{ vars.CWS_PUBLISHER_ID }}
         run: |
           node --input-type=module <<'NODE'
           const { CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN, ITEM_ID, PUBLISHER_ID } = process.env;
-          if (![CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN, ITEM_ID].every(Boolean)) {
+          if (![CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN, ITEM_ID, PUBLISHER_ID].every(Boolean)) {
             throw new Error('Missing Chrome Web Store repository configuration');
           }
           const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
@@ -53,6 +53,9 @@ jobs:
           if (!statusResponse.ok) {
             throw new Error(`Chrome Web Store item access failed: HTTP ${statusResponse.status}`);
           }
+          const status = await statusResponse.json();
+          const show = (r) => r ? `${r.state} (${(r.distributionChannels || []).map(c => c.crxVersion).join(', ') || 'no version'})` : 'none';
           console.log(`Chrome Web Store item access verified: ${ITEM_ID}`);
+          console.log(`Published: ${show(status.publishedItemRevisionStatus)}; submitted: ${show(status.submittedItemRevisionStatus)}`);
           console.log('Read-only verification complete.');
           NODE

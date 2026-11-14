@@ -1,15 +1,17 @@
 name: Publish to Chrome Web Store
 
-# On a version tag (v*), builds the extension zip and publishes it to the Chrome
-# Web Store via the CWS API, authenticating with an OAuth refresh token.
+# On a version tag (v*), builds the extension zip, uploads it and submits it
+# for review through the Chrome Web Store API V2 (V1 was shut down on
+# 2026-10-15), authenticating with an OAuth refresh token.
 #
-# Requires three repository SECRETS and one repository VARIABLE:
+# Requires three repository SECRETS and two repository VARIABLES:
 #   secret CWS_CLIENT_ID       OAuth client id      (Google Cloud > Credentials)
 #   secret CWS_CLIENT_SECRET   OAuth client secret
 #   secret CWS_REFRESH_TOKEN   refresh token        (scripts/cws-get-refresh-token.mjs)
-#   var    CWS_ITEM_ID         the extension's item id (from the dev console URL)
+#   var    CWS_ITEM_ID         the extension's item id (dev console > Package)
+#   var    CWS_PUBLISHER_ID    the publisher id (dev console > Account / the id in its URL)
 #
-# Without CWS_ITEM_ID set, the job is skipped (so the repo is safe before setup).
+# Without both variables set, the job is skipped (so the repo is safe before setup).
 
 on:
   push:
@@ -30,13 +32,28 @@ defaults:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    if: vars.CWS_ITEM_ID != ''
+    if: vars.CWS_ITEM_ID != '' && vars.CWS_PUBLISHER_ID != ''
+    env:
+      ITEM_URL: https://chromewebstore.googleapis.com/v2/publishers/${{ vars.CWS_PUBLISHER_ID }}/items/${{ vars.CWS_ITEM_ID }}
+      UPLOAD_URL: https://chromewebstore.googleapis.com/upload/v2/publishers/${{ vars.CWS_PUBLISHER_ID }}/items/${{ vars.CWS_ITEM_ID }}:upload
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
       - run: npm test
+
+      # The store rejects an upload whose version isn't higher than the last
+      # one, so catch a forgotten bump here with a clear message.
+      - name: Check the tag matches the manifest version
+        if: github.ref_type == 'tag'
+        run: |
+          manifest=$(jq -r .version extension/manifest.json)
+          tag="${GITHUB_REF_NAME#v}"
+          if [ "$manifest" != "$tag" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME doesn't match extension/manifest.json version $manifest. Bump the manifest, then tag v$manifest."
+            exit 1
+          fi
 
       - name: Build extension zip
         run: |
@@ -56,7 +73,10 @@ jobs:
             -d client_id="$CLIENT_ID" \
             -d client_secret="$CLIENT_SECRET" \
             -d refresh_token="$REFRESH_TOKEN" \
-            -d grant_type=refresh_token)
+            -d grant_type=refresh_token) || {
+            echo "::error::Google refused the token request: $(echo "$resp" | jq -r '.error // "unknown"' 2>/dev/null)"
+            exit 1
+          }
           token=$(echo "$resp" | jq -r '.access_token // empty')
           if [ -z "$token" ]; then
             echo "::error::Could not get an access token. Response: $(echo "$resp" | jq -r '.error // .')"
@@ -68,35 +88,38 @@ jobs:
       - name: Upload new package
         env:
           TOKEN: ${{ steps.token.outputs.token }}
-          ITEM_ID: ${{ vars.CWS_ITEM_ID }}
-        run: |
-          resp=$(curl -sS --fail-with-body -X PUT \
-            -H "Authorization: Bearer $TOKEN" \
-            -H "x-goog-api-version: 2" \
-            -T upload.zip \
-            "https://www.googleapis.com/upload/chromewebstore/v1.1/items/$ITEM_ID")
-          echo "$resp" | jq '{uploadState, itemError}' 2>/dev/null || echo "$resp"
-          state=$(echo "$resp" | jq -r '.uploadState // empty')
-          if [ "$state" = "FAILURE" ]; then
-            echo "::error::Upload rejected: $(echo "$resp" | jq -c '.itemError')"
-            exit 1
-          fi
-
-      - name: Publish
-        env:
-          TOKEN: ${{ steps.token.outputs.token }}
-          ITEM_ID: ${{ vars.CWS_ITEM_ID }}
         run: |
           resp=$(curl -sS --fail-with-body -X POST \
             -H "Authorization: Bearer $TOKEN" \
-            -H "x-goog-api-version: 2" \
+            -T upload.zip \
+            "$UPLOAD_URL") || { echo "::error::Upload failed: $resp"; exit 1; }
+          echo "$resp" | jq '{uploadState, crxVersion}'
+          state=$(echo "$resp" | jq -r '.uploadState // empty')
+          # Large packages are processed in the background: wait for them.
+          for _ in $(seq 1 30); do
+            [ "$state" = "IN_PROGRESS" ] || break
+            sleep 10
+            state=$(curl -sS --fail-with-body -H "Authorization: Bearer $TOKEN" \
+              "$ITEM_URL:fetchStatus" | jq -r '.lastAsyncUploadState // empty')
+            echo "Upload still processing: $state"
+          done
+          if [ "$state" != "SUCCEEDED" ]; then
+            echo "::error::Upload ended as ${state:-unknown}: $resp"
+            exit 1
+          fi
+
+      - name: Submit for review
+        env:
+          TOKEN: ${{ steps.token.outputs.token }}
+        run: |
+          resp=$(curl -sS --fail-with-body -X POST \
+            -H "Authorization: Bearer $TOKEN" \
             -H "Content-Length: 0" \
-            "https://www.googleapis.com/chromewebstore/v1.1/items/$ITEM_ID/publish")
-          echo "$resp"
-          status=$(echo "$resp" | jq -r '.status[0] // "UNKNOWN"')
-          echo "::notice::Chrome Web Store publish status: $status"
-          # OK = live rollout started; a review-pending status is also a success here.
-          case "$status" in
-            OK|ITEM_PENDING_REVIEW|PUBLISHED_WITH_FRICTION_WARNING) : ;;
+            "$ITEM_URL:publish") || { echo "::error::Publish failed: $resp"; exit 1; }
+          echo "$resp" | jq '{state, warningInfo}'
+          state=$(echo "$resp" | jq -r '.state // "UNKNOWN"')
+          echo "::notice::Chrome Web Store state: $state"
+          case "$state" in
+            PENDING_REVIEW|STAGED|PUBLISHED|PUBLISHED_TO_TESTERS) : ;;
             *) echo "::error::Publish returned: $(echo "$resp" | jq -c '.')"; exit 1 ;;
           esac

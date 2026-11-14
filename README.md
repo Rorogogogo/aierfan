@@ -45,7 +45,7 @@ Offline tests cover scheduler reversibility, Webpack interception, untouched HLS
 
 ## Releases
 
-Increment `extension/manifest.json` and `package.json`, then push a matching version tag. GitHub Actions runs tests, builds a ZIP and submits the extension update to Chrome Web Store review using the configured OAuth secrets. Google controls review and approval. The **Verify Chrome Web Store credentials** workflow performs a read-only token and item-access check.
+Increment `extension/manifest.json` and `package.json`, then push a matching version tag. GitHub Actions runs tests, checks the tag matches the manifest version, builds a ZIP and submits the extension update to Chrome Web Store review through the Chrome Web Store API V2, using the configured OAuth secrets and the `CWS_ITEM_ID` and `CWS_PUBLISHER_ID` repository variables. Google controls review and approval. The **Verify Chrome Web Store credentials** workflow performs a read-only token and item-access check.
 
 The current local version is **0.2.2**. The previously submitted **0.1.0** remains in store review; the new code and listing assets can be used for the next submission.
 
