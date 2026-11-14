@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
   <title>aierfan</title>
-  <rect x="2" y="2" width="124" height="124" rx="30" fill="#181a23" stroke="#353342" stroke-width="2"/>
+  <rect x="2" y="2" width="124" height="124" rx="30" fill="#000000" stroke="#333333" stroke-width="2"/>
   <!-- A single protection mark with a play-shaped cutout, legible at 16px. -->
-  <path fill="#b0a9ff" fill-rule="evenodd" d="M64 21 99 34v24c0 23-15 39-35 49C44 97 29 81 29 58V34L64 21Zm-8 25v32l27-16-27-16Z"/>
+  <path fill="#ffffff" fill-rule="evenodd" d="M64 21 99 34v24c0 23-15 39-35 49C44 97 29 81 29 58V34L64 21Zm-8 25v32l27-16-27-16Z"/>
 </svg>
