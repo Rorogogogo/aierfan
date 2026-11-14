@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "aierfan",
   "description": "拦截 kubb.tv 视频中插广告，清爽追剧。仅本地保存设置与拦截次数。",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "minimum_chrome_version": "111",
   "icons": {
     "16": "icons/icon16.png",

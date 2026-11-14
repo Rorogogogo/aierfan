@@ -1,6 +1,6 @@
-# aierfan 0.2.0 listing copy
+# aierfan 0.2.1 listing copy
 
-Use with the 0.2.0 package and updated screenshot when submitting the next store revision. Version 0.1.0 was already submitted separately; this file does not change that submission.
+Use with the 0.2.1 package and updated screenshot when submitting the next store revision. Version 0.1.0 was already submitted separately; this file does not change that submission.
 
 ## Description
 

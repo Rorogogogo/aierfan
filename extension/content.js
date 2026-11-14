@@ -52,7 +52,7 @@
     if (document.getElementById('kubb-helper-panel')) return;
     const host = document.createElement('div');
     host.id = 'kubb-helper-panel';
-    host.style.cssText = 'position:fixed;right:16px;bottom:16px;z-index:2147483647';
+    host.style.cssText = 'position:fixed;right:12px;bottom:12px;z-index:2147483647';
     view = globalThis.__aierfanUI.mount(host.attachShadow({ mode: 'closed' }), {
       floating: true,
       async onToggle(value) {
