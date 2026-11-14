@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1e2230"/>
+      <stop offset="1" stop-color="#0f1118"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b9c7ff"/>
+      <stop offset="1" stop-color="#7f9bff"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="124" height="124" rx="28" fill="url(#bg)" stroke="#424553" stroke-width="2"/>
+  <!-- play mark (hero): video plays fine -->
+  <path d="M46 40 L92 66 L46 92 Z" fill="url(#accent)"/>
+  <!-- block badge (corner): ads blocked -->
+  <circle cx="94" cy="34" r="20" fill="#ff6b6b" stroke="#0f1118" stroke-width="4"/>
+  <line x1="85" y1="34" x2="103" y2="34" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+</svg>
