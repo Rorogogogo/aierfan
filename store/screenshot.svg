@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="800" viewBox="0 0 1280 800" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#12141c"/><stop offset="1" stop-color="#0a0b11"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b9c7ff"/><stop offset="1" stop-color="#7f9bff"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="800" fill="url(#bg)"/>
+
+  <!-- logo -->
+  <g transform="translate(96,120)">
+    <rect x="0" y="0" width="128" height="128" rx="28" fill="#1e2230" stroke="#424553" stroke-width="2"/>
+    <path d="M44 38 L90 64 L44 90 Z" fill="url(#accent)"/>
+    <circle cx="92" cy="32" r="20" fill="#ff6b6b" stroke="#12141c" stroke-width="4"/>
+    <line x1="83" y1="32" x2="101" y2="32" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <text x="96" y="312" fill="#f2f4fa" font-size="64" font-weight="700">爱亦帆助手</text>
+  <text x="96" y="364" fill="#a8bbff" font-size="30" font-weight="500">拦截中插广告 · 优先最高画质</text>
+
+  <!-- feature bullets -->
+  <g fill="#c4c9d9" font-size="27">
+    <circle cx="110" cy="440" r="6" fill="#7f9bff"/><text x="132" y="449">自动拦截视频中插广告，省去等待</text>
+    <circle cx="110" cy="492" r="6" fill="#7f9bff"/><text x="132" y="501">每次拦截弹出 3 秒提示，并累计拦截次数</text>
+    <circle cx="110" cy="544" r="6" fill="#7f9bff"/><text x="132" y="553">在已提供的视频流中优先选择最高画质</text>
+    <circle cx="110" cy="596" r="6" fill="#7f9bff"/><text x="132" y="605">全中文界面 · 不收集任何数据</text>
+  </g>
+
+  <!-- panel mock -->
+  <g transform="translate(792,232)">
+    <rect x="0" y="0" width="360" height="336" rx="16" fill="#171922" stroke="#424553" stroke-width="2"/>
+    <text x="24" y="44" fill="#eee" font-size="22" font-weight="650">爱亦帆助手 · 实验版</text>
+    <!-- toggle 1 -->
+    <rect x="24" y="76" width="20" height="20" rx="4" fill="#a8bbff"/><text x="56" y="92" fill="#eee" font-size="19">拦截视频中插广告</text>
+    <!-- toggle 2 -->
+    <rect x="24" y="112" width="20" height="20" rx="4" fill="#a8bbff"/><text x="56" y="128" fill="#eee" font-size="19">优先选择最高画质</text>
+    <text x="24" y="172" fill="#c4c9d9" font-size="17">广告拦截已就绪 · 本次已拦截 3 次</text>
+    <text x="24" y="202" fill="#c4c9d9" font-size="17">累计拦截 128 次</text>
+    <text x="24" y="232" fill="#c4c9d9" font-size="17">已请求 1080p（已提供的最高画质）</text>
+    <text x="24" y="262" fill="#c4c9d9" font-size="17">实际画面：1920 × 1080</text>
+    <!-- toast -->
+    <rect x="40" y="286" width="280" height="40" rx="10" fill="#1f2230" stroke="#596079" stroke-width="1"/>
+    <text x="180" y="311" fill="#eee" font-size="17" text-anchor="middle">已拦截广告 · 累计拦截 128 次</text>
+  </g>
+
+  <text x="96" y="720" fill="#5b6075" font-size="20">Chrome 扩展 · Manifest V3 · 开源</text>
+</svg>
