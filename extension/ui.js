@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const shield = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="m12 2 8 3v5.5c0 5.2-3.4 8.9-8 11.5-4.6-2.6-8-6.3-8-11.5V5l8-3Zm-2 6v8l6.7-4L10 8Z"/></svg>';
+  const shield = '<svg viewBox="0 0 128 128" aria-hidden="true"><path fill="#a3a3a3" d="m39 43 36-25c14-10 35-1 35 17 0 7-3 13-10 18L64 78Z"/><path fill="#666666" d="m64 51 36 25c7 5 10 11 10 18 0 18-21 27-35 17L39 86Z"/><path fill="#ffffff" d="M18 36c0-18 17-26 31-16l37 26c14 10 14 26 0 36l-37 26c-14 10-31 2-31-16Z"/><path fill="#000000" stroke="#000000" stroke-width="9" stroke-linejoin="round" d="m94 76 20 7v14c0 12-8 21-20 27-12-6-20-15-20-27V83Z"/><path fill="#ffffff" d="m94 79 17 6v12c0 10-6 18-17 24-11-6-17-14-17-24V85Z"/><path fill="#000000" d="m94 86 11 4v7c0 7-4 12-11 17-7-5-11-10-11-17v-7Z"/></svg>';
   const styles = `
     :host{all:initial;color-scheme:dark;font:12px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;color:#d9dce7;-webkit-font-smoothing:antialiased}
     *,*::before,*::after{box-sizing:border-box}[hidden]{display:none!important}button,input{font:inherit}svg{width:16px;height:16px;flex-shrink:0}
