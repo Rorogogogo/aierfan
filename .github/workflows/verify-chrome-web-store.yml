@@ -1,0 +1,58 @@
+name: Verify Chrome Web Store credentials
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify OAuth and read store item status
+        env:
+          CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CWS_CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}
+          ITEM_ID: ${{ vars.CWS_ITEM_ID }}
+          PUBLISHER_ID: 1a56d3f7-f92f-4431-a934-8ed329d906e8
+        run: |
+          node --input-type=module <<'NODE'
+          const { CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN, ITEM_ID, PUBLISHER_ID } = process.env;
+          if (![CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN, ITEM_ID].every(Boolean)) {
+            throw new Error('Missing Chrome Web Store repository configuration');
+          }
+          const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+            method: 'POST',
+            body: new URLSearchParams({
+              client_id: CLIENT_ID,
+              client_secret: CLIENT_SECRET,
+              refresh_token: REFRESH_TOKEN,
+              grant_type: 'refresh_token'
+            }),
+            signal: AbortSignal.timeout(30000)
+          });
+          const token = await tokenResponse.json();
+          if (!tokenResponse.ok || !token.access_token) {
+            const allowedErrors = ['invalid_grant', 'invalid_client', 'unauthorized_client', 'invalid_request'];
+            const reason = allowedErrors.includes(token.error) ? token.error : 'token_exchange_failed';
+            throw new Error(`Google OAuth failed: HTTP ${tokenResponse.status}, ${reason}`);
+          }
+          console.log('Google OAuth refresh-token exchange succeeded.');
+          const statusResponse = await fetch(
+            `https://chromewebstore.googleapis.com/v2/publishers/${encodeURIComponent(PUBLISHER_ID)}/items/${encodeURIComponent(ITEM_ID)}:fetchStatus`,
+            {
+              headers: { Authorization: `Bearer ${token.access_token}` },
+              signal: AbortSignal.timeout(30000)
+            }
+          );
+          if (!statusResponse.ok) {
+            throw new Error(`Chrome Web Store item access failed: HTTP ${statusResponse.status}`);
+          }
+          console.log(`Chrome Web Store item access verified: ${ITEM_ID}`);
+          console.log('Read-only verification complete.');
+          NODE
