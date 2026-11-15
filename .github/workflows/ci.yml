@@ -30,9 +30,9 @@ jobs:
       - name: Build extension zip
         run: |
           cd extension
-          zip -r "../kubb-helper-chrome.zip" . -x '*.DS_Store'
-          ls -l ../kubb-helper-chrome.zip
+          zip -r "../aierfan-chrome.zip" . -x '*.DS_Store'
+          ls -l ../aierfan-chrome.zip
       - uses: actions/upload-artifact@v4
         with:
-          name: kubb-helper-chrome
-          path: kubb-helper-chrome.zip
+          name: aierfan-chrome
+          path: aierfan-chrome.zip

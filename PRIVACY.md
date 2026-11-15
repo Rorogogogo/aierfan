@@ -28,4 +28,4 @@ aierfan（“本扩展”）不收集、不存储、不传输、不出售任何�
 ## Contact
 
 Questions: open an issue at
-https://github.com/Rorogogogo/aiyifan-ads-free/issues
+https://github.com/Rorogogogo/aierfan/issues

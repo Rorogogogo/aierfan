@@ -24,7 +24,7 @@ jobs:
       - run: npm test
       - name: Build extension zip
         run: |
-          name="aiyifan-ads-free-${GITHUB_REF_NAME}.zip"
+          name="aierfan-${GITHUB_REF_NAME}.zip"
           cd extension
           zip -r "../$name" . -x '*.DS_Store'
           cd ..

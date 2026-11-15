@@ -34,4 +34,4 @@ Content scripts run only on https://kubb.tv/* and https://www.kubb.tv/* to suppr
 
 ## Privacy policy
 
-https://github.com/Rorogogogo/aiyifan-ads-free/blob/main/PRIVACY.md
+https://github.com/Rorogogogo/aierfan/blob/main/PRIVACY.md

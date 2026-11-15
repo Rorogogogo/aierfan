@@ -1,6 +1,14 @@
 # aierfan
 
-A small Chrome extension that blocks scheduled mid-roll ads on **kubb.tv**.
+给在海外用 ayf 追剧的朋友做的 Chrome 小插件：拦截已适配播放器的定时中插广告，中文界面，一个开关即可开启或暂停。
+
+设置与拦截次数仅保存在本机，不收集个人数据。视频内嵌广告、网页横幅等不保证能拦截；网站播放器更新可能影响兼容性。
+
+[Chrome 应用商店](https://chromewebstore.google.com/detail/aierfan/gikjmbpepikgpkhonacmiiaajdjgajki) · [问题反馈](https://github.com/Rorogogogo/aierfan/issues) · [MIT License](LICENSE)
+
+![aierfan 界面示意](store/screenshot-1280x800.png)
+
+A small Chrome extension that blocks scheduled mid-roll ads on **ayf (kubb.tv)**. Independent project; not affiliated with the video website.
 
 ## Controls
 
@@ -16,13 +24,20 @@ It targets scheduled mid-video ads. Banners, ads baked into the video, other pre
 
 ## Install locally
 
+Clone or download this repository first:
+
+```sh
+git clone https://github.com/Rorogogogo/aierfan.git
+cd aierfan
+```
+
 1. Open `chrome://extensions` and enable Developer mode.
 2. Click **Load unpacked** and select the `extension` folder.
 3. Pin **aierfan**, then refresh your kubb.tv tabs.
 
 After updating the files, click **Reload** on the aierfan card in `chrome://extensions`, then refresh your video tab. Existing counts and the ad-blocking preference are preserved when reloading the same installed extension. The obsolete quality preference is ignored.
 
-The local files are in `/Users/roro/Developer/Personal Project/kubb-helper/extension`. The compatibility link at `/Users/roro/Developer/kubb-helper` still points to that folder.
+The unpacked extension is in this repository’s `extension/` directory. No build step or dependencies are required.
 
 ## Implementation
 
@@ -47,10 +62,14 @@ Offline tests cover scheduler reversibility, Webpack interception, untouched HLS
 
 Increment `extension/manifest.json` and `package.json`, then push a matching version tag. GitHub Actions runs tests, checks the tag matches the manifest version, builds a ZIP and submits the extension update to Chrome Web Store review through the Chrome Web Store API V2, using the configured OAuth secrets and the `CWS_ITEM_ID` and `CWS_PUBLISHER_ID` repository variables. Google controls review and approval. The **Verify Chrome Web Store credentials** workflow performs a read-only token and item-access check.
 
-The current local version is **0.2.2**. The previously submitted **0.1.0** remains in store review; the new code and listing assets can be used for the next submission.
+The source version is **0.2.2**. The Chrome Web Store version may differ while updates are under review.
 
 ## Limitations
 
 The site can change its private scheduler interface. If the hook is unavailable, the panel shows **需适配**. Disable the extension and refresh if playback behaves unexpectedly. Enabling the switch while an ad is already playing does not end that ad; refresh the page afterward.
 
 See [PRIVACY.md](PRIVACY.md) for the privacy policy.
+
+## License
+
+[MIT](LICENSE) — Copyright (c) 2026 Robert Wang.
